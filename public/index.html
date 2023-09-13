@@ -53,7 +53,7 @@
             </p>
             <button
               class="btn disabled:text-stone-400"
-              @click="open = true, prompt = promptDraft, state = state === 'stopped' ? 'loading' : 'stopped', state === 'streaming' ? stopGeneration() : true"
+              @click="open = true, saveToken(token), prompt = promptDraft, state = state === 'stopped' ? 'loading' : 'stopped', state === 'streaming' ? stopGeneration() : true"
               :class="promptDraft.length < minPromptSize ? 'btn-neutral' : state === 'stopped' ? 'btn-accent' : 'btn-warning'"
               :disabled="promptDraft.length < minPromptSize"
             >
@@ -141,16 +141,23 @@
       }
 
       function app() {
+
+        const storageKey = "SPACE_FACTORY_ACCESS_TOKEN"
+
         return {
           open: false,
           promptDraft:
             new URLSearchParams(window.location.search).get("prompt") || '',
           prompt: "",
+          token: localStorage.getItem(storageKey) || "",
           size: 0,
           minPromptSize: 16, // if you change this, you will need to also change in src/index.mts
           timeoutInSec: 15, // time before we determine something went wrong
           state: "stopped",
           lastTokenAt: +new Date(),
+          saveToken(token) {
+            localStorage.setItem(storageKey, token)
+          },
           init() {
             setInterval(() => {
               if (this.state === "stopped") {

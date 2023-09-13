@@ -35,7 +35,9 @@ export const createSpace = async (files: RepoFile[], token: string) => {
     credentials,
     license: "mit",
     sdk:
-      files.some(file => file.path.includes("app.py"))
+      files.some(file => file.path.includes("Dockerfile"))
+        ? "docker"
+      : files.some(file => file.path.includes("app.py"))
         ? "streamlit"
         : "static" // "streamlit" | "gradio" | "docker" | "static";
   });

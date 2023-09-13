@@ -4,7 +4,9 @@ import { createLlamaPrompt } from './createLlamaPrompt.mts'
 import { parseTutorial } from './parseTutorial.mts'
 import { getPythonApp} from './getPythonApp.mts'
 import { getWebApp } from './getWebApp.mts'
+import { getReactApp } from './getReactApp.mts'
 import { isPythonAppPrompt } from './isPythonAppPrompt.mts'
+import { isReactAppPrompt } from './isReactAppPrompt.mts'
 
 export const generateFiles = async (prompt: string, token: string) => {
   if (`${prompt}`.length < 2) {
@@ -14,6 +16,8 @@ export const generateFiles = async (prompt: string, token: string) => {
   const { prefix, instructions } =
     isPythonAppPrompt(prompt)
     ? getPythonApp(prompt)
+    : isReactAppPrompt(prompt)
+    ? getReactApp(prompt)
     : getWebApp(prompt)
 
   const inputs = createLlamaPrompt(instructions) + "\nSure! Here are the source files:\n" + prefix
@@ -60,7 +64,7 @@ let tutorial = prefix
   
   console.log("analyzing the generated instructions..")
   const files = parseTutorial(tutorial).map(({ filename, content }) => ({
-    path: `${filename || ""}`.trim(),
+    path: `${filename || ""}`.trim().replace(" ", ""),
     content: `${content || ""}`
   } as RepoFile))
   .filter(res => res.path.length && res.content.length)

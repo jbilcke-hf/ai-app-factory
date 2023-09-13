@@ -24,7 +24,7 @@ http://localhost:7860/?prompt=A%20simple%20page%20to%20compute%20the%20BMI%20(us
 ```bash
 nvm use
 npm i
-HF_API_TOKEN=******* npm run start
+npm run start
 ```
 
 ## Building and running with Docker
