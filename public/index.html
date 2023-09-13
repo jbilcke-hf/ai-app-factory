@@ -28,9 +28,16 @@
               ? 'text-lg lg:text-xl'
               : 'text-lg lg:text-xl'"
             >
-              <p>A space to generate tiny web apps.</p>
-              <p>In case of hallucination try generating again 🎲</p>
+              <p>A space to generate Hugging Face Spaces using a LLM.</p>
+              <p>The Space will be created under your name, so please provide a valid Hugging Face token (with <span class="font-bold font-mono text-sm text-red-900">WRITE</span> access).</p>
             </div>
+            <input
+              name="token"
+              type="password"
+              x-model="token"
+              placeholder="Your Hugging Face token"
+              class="input w-full rounded text-stone-800 bg-stone-50 border-2 border-stone-400 font-mono text-md md:text-lg"
+            />
             <textarea
               name="promptDraft"
               x-model="promptDraft"
@@ -57,17 +64,17 @@
             <div class="flex flex-col text-stone-700 space-y-1 md:space-y-2">
               <p class="text-stone-700">
                 Model used:
-                <a href="https://huggingface.co/meta-llama" class="underline" target="_blank">
-                  Llama-2
+                <a href="https://huggingface.co/codellama/CodeLlama-34b-Instruct-hf" class="underline" target="_blank">
+                  codellama/CodeLlama-34b-Instruct-hf
                 </a>
               </p>
-              <p>Powered by 🤗 <a href="https://huggingface.co/inference-endpoints" class="underline" target="_blank">Inference Endpoints</a></p>
+              <p>Powered by 🤗 <a href="https://huggingface.co/inference-api" class="underline" target="_blank">Inference API</a></p>
               <p class="text-stone-700" x-show="state === 'loading'">
-                Waiting for the stream to begin (might take a few minutes)..
+                Waiting for the generation to begin (might take a few minutes)..
               </p>
               <p class="text-stone-700" x-show="state === 'streaming'">
                 Content size: <span x-text="humanFileSize(size, true, 2)"></span>. This version generates up
-                to 1150 tokens.
+                to 4096 tokens.
               </p>
             </div>
           </div>
@@ -82,7 +89,7 @@
           class="border-none w-full md:min-h-screen"
           :src="!open
             ? '/placeholder.html'
-            : `/app?prompt=${encodeURIComponent(prompt)}`
+            : `/app?prompt=${encodeURIComponent(prompt)}&token=${encodeURIComponent(token)}`
           "
         ></iframe>
 
