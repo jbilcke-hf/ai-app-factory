@@ -1,6 +1,6 @@
 export function parseTutorial(text: string): Array<{ filename: string; content: string }> {
   const result: { filename: string; content: string; }[] = [];
-  const regex = /# In (?:the )?(.*):\n```(?:\w+\n)?([\s\S]*?)```/g;
+  const regex = /#\s+(?:And finally,\s+)?in\s+(?:(?:the|your)\s+)?(.*)(?:, add the following code)?:\n```(?:\w+\n)?([\s\S]*?)```/gi;
   let match: RegExpExecArray | null;
   while ((match = regex.exec(text)) !== null) {
       result.push({
