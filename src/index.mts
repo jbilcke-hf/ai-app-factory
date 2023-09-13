@@ -1,11 +1,6 @@
 import express from 'express'
-import { HfInference } from '@huggingface/inference'
 import { createSpace } from './createSpace.mts'
-import { RepoFile } from './types.mts'
 import { generateFiles } from './generateFiles.mts'
-
-const hfi = new HfInference(process.env.HF_API_TOKEN)
-const hf = hfi.endpoint(process.env.HF_ENDPOINT_URL)
 
 const app = express()
 const port = 7860
@@ -50,6 +45,14 @@ app.get('/app', async (req, res) => {
     return
   }
 
+  const token = `${req.query.token}`
+
+  if (!token.startsWith("hf_")) {
+    res.write(`the provided token seems to be invalid`)
+    res.end()
+    return
+  }
+
   const id = `${pending.total++}`
   console.log(`new request ${id}`)
 
@@ -69,7 +72,7 @@ app.get('/app', async (req, res) => {
   let files = []
 
   while (nbAttempts-- > 0) {
-    files = await generateFiles(`${req.query.prompt || ""}`)
+    files = await generateFiles(`${req.query.prompt || ""}`, token)
     if (files.length) {
       console.log(`seems like we have ${files.length} files`)
       break
@@ -78,7 +81,7 @@ app.get('/app', async (req, res) => {
 
   console.log("files:", JSON.stringify(files, null, 2))
 
-  await createSpace(files)
+  await createSpace(files, token)
 
   res.write(JSON.stringify(files, null, 2))
   res.end()

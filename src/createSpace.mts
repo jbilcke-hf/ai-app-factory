@@ -1,21 +1,34 @@
 import { v4 as uuidv4 } from "uuid"
 import { createRepo, uploadFiles, whoAmI } from "@huggingface/hub"
 import type { RepoDesignation, Credentials } from "@huggingface/hub"
+import slugify from "slugify"
 
 import { RepoFile } from "./types.mts"
 
-export const createSpace = async (files: RepoFile[]) => {
-  
-  const repoId = `space-factory-${uuidv4().slice(0, 4)}`
-  const repoName = `jbilcke-hf/${repoId}`
+export const createSpace = async (files: RepoFile[], token: string) => {
 
-  const repo: RepoDesignation = { type: "space", name: repoName }
-  const credentials: Credentials = { accessToken: process.env.HF_API_TOKEN }
+  const credentials: Credentials = { accessToken: token }
 
   const { name: username } = await whoAmI({ credentials })
-  console.log("me: ", username)
 
-  console.log("repo:", JSON.stringify(repo, null, 2))
+  let slug = ``
+  let title = ``
+  const readme = files.find(p => p.path === "README.md")
+  try {
+    const matches = readme.content.match(/title: ([^\n]+)\n/)
+    title = matches?.[1] || ""
+    slug = (slugify as any)(title) as string
+    if (!slug.length) {
+      throw new Error("sluggification failed")
+    }
+  } catch (err) {
+    slug = `sf-${uuidv4().slice(0, 3)}`
+  }
+
+  const repoName = `${username}/${slug}`
+
+  const repo: RepoDesignation = { type: "space", name: repoName }
+  console.log(`Creating space at ${repoName}${title ? ` (${title})` : ''}`)
 
   await createRepo({
     repo,
