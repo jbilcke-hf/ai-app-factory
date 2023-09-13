@@ -49,5 +49,5 @@ The app is about: ${prompt}`,
     }
   ]
 
-  return { prefix, instructions }
+  return { prefix, files: [], instructions }
 }

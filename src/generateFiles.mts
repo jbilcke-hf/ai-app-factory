@@ -8,12 +8,16 @@ import { getReactApp } from './getReactApp.mts'
 import { isPythonAppPrompt } from './isPythonAppPrompt.mts'
 import { isReactAppPrompt } from './isReactAppPrompt.mts'
 
-export const generateFiles = async (prompt: string, token: string) => {
+export const generateFiles = async (
+  prompt: string,
+  token: string,
+  onProgress: (chunk: string) => boolean
+  ) => {
   if (`${prompt}`.length < 2) {
     throw new Error(`prompt too short, please enter at least ${prompt} characters`)
   }
 
-  const { prefix, instructions } =
+  const { prefix, files, instructions } =
     isPythonAppPrompt(prompt)
     ? getPythonApp(prompt)
     : isReactAppPrompt(prompt)
@@ -22,10 +26,14 @@ export const generateFiles = async (prompt: string, token: string) => {
 
   const inputs = createLlamaPrompt(instructions) + "\nSure! Here are the source files:\n" + prefix
 
-let tutorial = prefix
+  let isAbortedOrFailed = false
+
+  let tutorial = prefix
 
   try {
     const hf = new HfInference(token)
+
+    onProgress(prefix)
 
     for await (const output of hf.textGenerationStream({
       // model: "tiiuae/falcon-180B-chat",
@@ -49,25 +57,39 @@ let tutorial = prefix
       tutorial += output.token.text
       process.stdout.write(output.token.text)
       // res.write(output.token.text)
-      if (tutorial.includes('<|end|>')
+      if (
+        tutorial.includes('<|end|>')
+      || tutorial.includes('</s>')
       || tutorial.includes('[ENDINSTRUCTION]')
       || tutorial.includes('[/TASK]')
       || tutorial.includes('<|assistant|>')) {
+        tutorial = tutorial.replaceAll("</s>", "").replaceAll("<|end|>", "")
+        break
+      }
+      if (!onProgress(output.token.text)) {
+        console.log("aborting the LLM generation")
+        isAbortedOrFailed = true
         break
       }
     }
 
   } catch (e) {
+    isAbortedOrFailed = true
     console.log("failed:")
     console.log(e)
   } 
   
+  if (isAbortedOrFailed) {
+    console.log("the request was aborted, so we return an empty list")
+    return []
+  }
+
   console.log("analyzing the generated instructions..")
-  const files = parseTutorial(tutorial).map(({ filename, content }) => ({
-    path: `${filename || ""}`.trim().replace(" ", ""),
+  const generatedFiles = parseTutorial(tutorial).map(({ filename, content }) => ({
+    path: `${filename || ""}`.trim().replaceAll(" ", ""),
     content: `${content || ""}`
   } as RepoFile))
   .filter(res => res.path.length && res.content.length)
 
-  return files
+  return [...generatedFiles, ...files]
 }

@@ -53,11 +53,32 @@ app.get('/app', async (req, res) => {
     return
   }
 
+  /*
+  res.write(`<!doctype html>
+  <script src="/markdown-to-html.js"></script>
+  <div id="formatted-markdown"></div>
+  <script>
+  setInterval(
+    function fn() {
+      try {
+        var input = document.getElementById("raw-markdown-stream")
+        var output = document.getElementById("formatted-markdown")
+        output.innerHTML = MarkdownToHtml.parse(input.innerHTML)
+      } catch (err) {
+        console.error(err)
+      }
+    },
+    1000
+  )
+  </script>
+  <div id="raw-markdown-stream" style="display: none">
+  `)
+  */
+
   const id = `${pending.total++}`
   console.log(`new request ${id}`)
 
   pending.queue.push(id)
-
 
   req.on('close', function() {
     endRequest(id, 'browser asked to end the connection')
@@ -72,18 +93,31 @@ app.get('/app', async (req, res) => {
   let files = []
 
   while (nbAttempts-- > 0) {
-    files = await generateFiles(`${req.query.prompt || ""}`, token)
+    files = await generateFiles(
+      `${req.query.prompt || ""}`,
+      token,
+      (chunk: string) => {
+        res.write(chunk)
+
+        // return true here as long as our request is still valid
+        // but if the user disconnected, the id will be removed from the queue,
+        // and we will return false, indicating to generateFiles that we should abort
+        return pending.queue.includes(id)
+      })
     if (files.length) {
       console.log(`seems like we have ${files.length} files`)
       break
     }
   }
 
-  console.log("files:", JSON.stringify(files, null, 2))
+  if (files.length > 0) {
+    console.log("files:", JSON.stringify(files, null, 2))
 
-  await createSpace(files, token)
+    await createSpace(files, token)
+  }
 
-  res.write(JSON.stringify(files, null, 2))
+  // res.write(JSON.stringify(files, null, 2))
+  // res.write(`</div>`)
   res.end()
 })
 

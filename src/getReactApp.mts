@@ -1,8 +1,15 @@
 import { alpine } from "./alpine.mts"
 import { daisy } from "./daisy.mts"
+import { dockerfile } from "./docker.mts"
 
 export function getReactApp(prompt: string) {
-  const prefix = `# In src/main.tsx:\n\`\`\``
+  const prefix = `# In src/pages/index.tsx:\n\`\`\``
+  const files = [
+    {
+      path: `Dockerfile`,
+      content: dockerfile,
+    }
+  ]
   const instructions = [
     {
       role: "system",
@@ -12,34 +19,14 @@ export function getReactApp(prompt: string) {
     },
     {
       role: "user",
-      content: `Please write, file by file, the source code for a Next 12 application.
-
-The app should be buildable when we call:
-
+      content: `Think step by step, you got this! Please write, file by file, the source code for a Next 12 application.
+The app should be buildable when we run this in command line:
 \`\`\`
 npm install
 npm run start
 \`\`\`
 
-And installable using a Dockerfile. Here is an example:
-
-\`\`\`
-FROM node:18
-RUN useradd -o -u 1000 user
-USER user
-ENV HOME=/home/user \
-PATH=/home/user/.local/bin:$PATH
-WORKDIR $HOME/app
-COPY --chown=user package*.json $HOME/app
-RUN npm install
-COPY --chown=user . $HOME/app
-EXPOSE 7860
-CMD [ "npm", "run", "start" ]
-\`\`\`
-
-Don't forget to write a valid package.json file!
-
-Don't forget to write a README.md with the following header:
+The project will be deployed to Hugging Face, so it must include a README.md with the following YAML header:
 \`\`\`
 ---
 license: apache-2.0
@@ -51,11 +38,15 @@ colorTo: green
 ---
 \`\`\`
 
-Of course, you MUST replace <APPNAME> with a good app name!
+Important rules:
+- you need to leave: "sdk: docker" as-is, but replace: "<APPNAME>" with an actual name, please.
+- Don't forget to write a valid package.json file!
 
-The app is about: ${prompt}`,
+The app is about: ${prompt}.
+
+Remember: don't forget to edit the README.me and a package.json file!`,
     }
   ]
 
-  return { prefix, instructions }
+  return { prefix, files, instructions }
 }
