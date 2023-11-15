@@ -1,4 +1,4 @@
-import { streamlitDoc } from "./streamlitDoc.mts";
+import { gradioDoc } from "./gradioDoc.mts"
 
 export function getGradioApp(prompt: string) {
   const prefix = "# In app.py:\n```"
@@ -9,7 +9,7 @@ export function getGradioApp(prompt: string) {
       content: [
         `You are a Python developer, expert at crafting Gradio applications to deploy to Hugging Face.`,
         `Here is an example of a minimal Gradio application:`,
-        streamlitDoc
+        gradioDoc
       ].filter(item => item).join("\n")
     },
     {

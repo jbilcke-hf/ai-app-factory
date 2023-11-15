@@ -1,4 +1,4 @@
-export const streamlitDoc = `
+export const gradioDoc = `
 # Gradio Code Example
 
 \`\`\`python
