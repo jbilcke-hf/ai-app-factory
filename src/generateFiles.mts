@@ -2,10 +2,12 @@ import { HfInference } from '@huggingface/inference'
 import { RepoFile } from './types.mts'
 import { createLlamaPrompt } from './createLlamaPrompt.mts'
 import { parseTutorial } from './parseTutorial.mts'
-import { getPythonApp} from './getPythonApp.mts'
+import { getGradioApp } from './getGradioApp.mts'
+import { getStreamlitApp } from './getStreamlitApp.mts'
 import { getWebApp } from './getWebApp.mts'
 import { getReactApp } from './getReactApp.mts'
-import { isPythonAppPrompt } from './isPythonAppPrompt.mts'
+import { isStreamlitAppPrompt } from './isStreamlitAppPrompt.mts'
+import { isPythonOrGradioAppPrompt } from './isPythonOrGradioAppPrompt.mts'
 import { isReactAppPrompt } from './isReactAppPrompt.mts'
 
 export const generateFiles = async (
@@ -18,8 +20,10 @@ export const generateFiles = async (
   }
 
   const { prefix, files, instructions } =
-    isPythonAppPrompt(prompt)
-    ? getPythonApp(prompt)
+  isStreamlitAppPrompt(prompt)
+    ? getStreamlitApp(prompt)
+    : isPythonOrGradioAppPrompt(prompt)
+    ? getGradioApp(prompt)
     : isReactAppPrompt(prompt)
     ? getReactApp(prompt)
     : getWebApp(prompt)

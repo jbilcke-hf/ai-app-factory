@@ -1,6 +1,6 @@
 import { streamlitDoc } from "./streamlitDoc.mts";
 
-export function getPythonApp(prompt: string) {
+export function getStreamlitApp(prompt: string) {
   const prefix = "# In app.py:\n```"
 
   const instructions = [
