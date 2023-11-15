@@ -31,7 +31,8 @@ Those library will be globally exposed thanks to the <script> dependencies, so y
 Some remarks:
 - DO NOT USE VUE.JS
 
-Rember, you need to write the index.html but also the app.js and/or the style.css files!
+Remember, you need to write the index.html but also the app.js and/or the style.css files!
+DO NOT WRITE AN EXAMPLE! WRITE THE FULL CODE!!
 
 Don't forget to write a README.md with the following header:
 \`\`\`
