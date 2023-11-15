@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:20
 
 # Set up a new user named "user" with user ID 1000
 RUN useradd -o -u 1000 user

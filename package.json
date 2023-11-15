@@ -1,7 +1,7 @@
 {
-  "name": "space-factory",
+  "name": "ai-app-factory",
   "version": "1.0.0",
-  "description": "A Hugging Face Space generator",
+  "description": "Hugging Face Space templates on steroids!",
   "main": "src/index.mts",
   "scripts": {
     "start": "node --loader ts-node/esm src/index.mts",
