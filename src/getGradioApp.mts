@@ -22,6 +22,7 @@ You MUST use the following Python modules:
 You are free to use (if necessary) the following Python modules:
 - numpy
 - matplotlib
+- pytorch
 - diffusers
 - transformers
 

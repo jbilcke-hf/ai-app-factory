@@ -18,8 +18,10 @@ export function getStreamlitApp(prompt: string) {
 
 Please limit yourself to the following Python modules:
 - numpy
-- streamlit
 - matplotlib
+- pytorch
+- diffusers
+- transformers
 
 Don't forget to write a README.md with the following header:
 \`\`\`
