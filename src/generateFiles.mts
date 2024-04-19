@@ -1,6 +1,6 @@
 import { HfInference } from '@huggingface/inference'
 import { RepoFile } from './types.mts'
-import { createLlamaPrompt } from './createLlamaPrompt.mts'
+import { createLlamaCoderPrompt } from './createLlamaCoderPrompt.mts'
 import { parseTutorial } from './parseTutorial.mts'
 import { getGradioApp } from './getGradioApp.mts'
 import { getStreamlitApp } from './getStreamlitApp.mts'
@@ -28,7 +28,7 @@ export const generateFiles = async (
     ? getReactApp(prompt)
     : getWebApp(prompt)
 
-  const inputs = createLlamaPrompt(instructions) + "\nSure! Here are the source files:\n" + prefix
+  const inputs = createLlamaCoderPrompt(instructions) + "\nSure! Here are the source files:\n" + prefix
 
   let isAbortedOrFailed = false
 
@@ -40,8 +40,11 @@ export const generateFiles = async (
     onProgress(prefix)
 
     for await (const output of hf.textGenerationStream({
-      // model: "tiiuae/falcon-180B-chat",
-      model: "codellama/CodeLlama-34b-Instruct-hf",
+
+      model: "meta-llama/Meta-Llama-3-70B-Instruct",
+      // model: "codellama/CodeLlama-34b-Instruct-hf",
+      // model: "ise-uiuc/Magicoder-CL-7B" // not supported by Hugging Face right now (no stream + max token is 250)
+
       inputs,
       parameters: {
         do_sample: true,
@@ -53,7 +56,10 @@ export const generateFiles = async (
         // for  "tiiuae/falcon-180B-chat":
         //  `inputs` tokens + `max_new_tokens` must be <= 8192
         //  error: `inputs` must have less than 4096 tokens.
-        max_new_tokens: 4096,
+
+        // for Llama-3 it is 8192
+        max_new_tokens: 8192,
+        temperature: 0.8,
         return_full_text: false,
       }
     })) {
@@ -63,10 +69,12 @@ export const generateFiles = async (
       // res.write(output.token.text)
       if (
         tutorial.includes('<|end|>')
-      || tutorial.includes('</s>')
-      || tutorial.includes('[ENDINSTRUCTION]')
-      || tutorial.includes('[/TASK]')
-      || tutorial.includes('<|assistant|>')) {
+        || tutorial.includes('<|eot_id|>')
+        || tutorial.includes('<|start_header_id|>assistant<|end_header_id|>')
+        || tutorial.includes('</s>')
+        || tutorial.includes('[ENDINSTRUCTION]')
+        || tutorial.includes('[/TASK]')
+        || tutorial.includes('<|assistant|>')) {
         tutorial = tutorial.replaceAll("</s>", "").replaceAll("<|end|>", "")
         break
       }

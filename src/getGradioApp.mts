@@ -7,7 +7,7 @@ export function getGradioApp(prompt: string) {
     {
       role: "system",
       content: [
-        `You are a Python developer, expert at crafting Gradio applications to deploy to Hugging Face.`,
+        `You are a Python developer, expert at crafting Gradio applications to deploy to Hugging Face. You must generate valid Python code. Don't forget the requirements.txt files!`,
         `Here is an example of a minimal Gradio application:`,
         gradioDoc
       ].filter(item => item).join("\n")
@@ -16,12 +16,16 @@ export function getGradioApp(prompt: string) {
       role: "user",
       content: `Please write, file by file, the source code for a Gradio project.
 
-You are allowed to use (if necessary) the following Python modules:
-- numpy
+You MUST use the following Python modules:
 - gradio (version 3.39.0)
-- matplotlib
 
-Don't forget to write a README.md with the following header:
+You are free to use (if necessary) the following Python modules:
+- numpy
+- matplotlib
+- diffusers
+- transformers
+
+Don't forget to write a README.md with the following header, or else you will be FIRED:
 \`\`\`
 ---
 license: apache-2.0

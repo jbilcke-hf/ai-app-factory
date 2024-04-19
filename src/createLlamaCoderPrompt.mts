@@ -1,9 +1,9 @@
 // adapted from https://huggingface.co/TheBloke/Llama-2-13B-chat-GPTQ/discussions/5 
-export function createLlamaPrompt(messages: Array<{ role: string, content: string }>) {
+export function createLlamaCoderPrompt(messages: Array<{ role: string, content: string }>) {
   const B_INST = "[INST]", E_INST = "[/INST]";
   const B_SYS = "<<SYS>>\n", E_SYS = "\n<</SYS>>\n\n";
   const BOS = "<s>", EOS = "</s>";
-  const DEFAULT_SYSTEM_PROMPT = "You are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe. Please ensure that your responses are socially unbiased and positive in nature. If a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you don't know the answer to a question, please don't share false information.";
+  const DEFAULT_SYSTEM_PROMPT = "You are an expert coding assistant. Always write code as complete as possible, as the user doesn't have hands. You will receive a generous tip if you write correct code, so take a step back and think rationally about the architecture and data logic of your project workflow.";
 
   if (messages[0].role != "system"){
       messages = [
