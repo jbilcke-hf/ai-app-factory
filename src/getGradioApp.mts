@@ -18,11 +18,11 @@ export function getGradioApp(prompt: string) {
 
 You MUST use the following Python modules:
 - gradio (version 5.23.3)
+- torch (version 2.6.0)
 
-You are free to use (if necessary) the following Python modules:
+You are free to use (if necessary) the following Python modules. Make sure to add them to the requirements.txt:
 - numpy
 - matplotlib
-- torch
 - diffusers
 - transformers
 
