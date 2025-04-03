@@ -19,7 +19,7 @@ export function getStreamlitApp(prompt: string) {
 Please limit yourself to the following Python modules:
 - numpy
 - matplotlib
-- pytorch
+- torch
 - diffusers
 - transformers
 

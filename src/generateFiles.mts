@@ -58,7 +58,7 @@ export const generateFiles = async (
         //  error: `inputs` must have less than 4096 tokens.
 
         // for Llama-3 it is 8192
-        max_new_tokens: 8192,
+        max_new_tokens: 7000, // 8192,
         temperature: 0.8,
         return_full_text: false,
       }

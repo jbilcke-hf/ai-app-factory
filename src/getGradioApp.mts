@@ -17,12 +17,12 @@ export function getGradioApp(prompt: string) {
       content: `Please write, file by file, the source code for a Gradio project.
 
 You MUST use the following Python modules:
-- gradio (version 3.39.0)
+- gradio (version 5.23.3)
 
 You are free to use (if necessary) the following Python modules:
 - numpy
 - matplotlib
-- pytorch
+- torch
 - diffusers
 - transformers
 
@@ -32,7 +32,7 @@ Don't forget to write a README.md with the following header, or else you will be
 license: apache-2.0
 title: <app name>
 sdk: gradio
-sdk_version: 3.39.0
+sdk_version: 5.23.3
 app_file: app.py
 emoji: 👀
 colorFrom: green

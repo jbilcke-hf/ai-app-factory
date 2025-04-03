@@ -8,7 +8,7 @@ pinned: false
 app_port: 7860
 ---
 
-Generate Hugging Face Spaces using meta-llama/Meta-Llama-3-70B-Instruct
+Generate Hugging Face Spaces using deepseek-ai/DeepSeek-V3-0324
 
 The apps may not always work and usually human work is necessary to finish them.
 See this project as "Hugging Face Space templates on steroids".
