@@ -26,6 +26,7 @@ You are free to use (if necessary) the following Python modules. In tha case, do
 - matplotlib
 - diffusers
 - transformers
+- huggingface_hub
 
 Don't forget to write a README.md with the following header, or else you will be FIRED:
 \`\`\`
