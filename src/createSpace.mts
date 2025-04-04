@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid"
 import { createRepo, uploadFiles, whoAmI } from "@huggingface/hub"
-import type { RepoDesignation, Credentials } from "@huggingface/hub"
+import type { RepoDesignation, Credentials, HubApiError } from "@huggingface/hub"
 import slugify from "slugify"
 
 import { RepoFile } from "./types.mts"
@@ -30,17 +30,28 @@ export const createSpace = async (files: RepoFile[], token: string) => {
   const repo: RepoDesignation = { type: "space", name: repoName }
   console.log(`Creating space at ${repoName}${title ? ` (${title})` : ''}`)
 
-  await createRepo({
-    repo,
-    credentials,
-    license: "mit",
-    sdk:
-      files.some(file => file.path.includes("Dockerfile"))
-        ? "docker"
-      : files.some(file => file.path.includes("app.py"))
-        ? "streamlit"
-        : "static" // "streamlit" | "gradio" | "docker" | "static";
-  });
+  try {
+    await createRepo({
+      repo,
+      credentials,
+      license: "mit",
+      sdk:
+        files.some(file => file.path.includes("Dockerfile"))
+          ? "docker"
+        : files.some(file => file.path.includes("app.py"))
+          ? "streamlit"
+          : "static" // "streamlit" | "gradio" | "docker" | "static";
+    });
+  } catch (error) {
+    // If the space already exists (409 Conflict), skip creation and just upload files
+    const apiError = error as HubApiError;
+    if (apiError.statusCode === 409) {
+      console.log(`Space ${repoName} already exists, skipping creation and updating files...`);
+    } else {
+      // For other errors, rethrow
+      throw error;
+    }
+  }
 
   console.log("uploading files..")
   await uploadFiles({

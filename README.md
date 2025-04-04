@@ -5,7 +5,7 @@ colorFrom: blue
 colorTo: yellow
 sdk: docker
 pinned: false
-app_port: 7860
+app_port: 3000
 ---
 
 Generate Hugging Face Spaces using deepseek-ai/DeepSeek-V3-0324
@@ -18,7 +18,7 @@ See this project as "Hugging Face Space templates on steroids".
 ## Local prompt examples
 
 ```
-http://localhost:7860/?prompt=A%20simple%20page%20to%20compute%20the%20BMI%20(use%20SI%20units)
+http://localhost:3000/?prompt=A%20simple%20page%20to%20compute%20the%20BMI%20(use%20SI%20units)
 ```
 
 # Installation
@@ -40,5 +40,5 @@ This script is a shortcut executing the following commands:
 
 ```bash
 docker build -t space-factory .
-docker run -it -p 7860:7860 space-factory
+docker run -it -p 3000:3000 space-factory
 ```

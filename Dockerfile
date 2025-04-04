@@ -23,5 +23,5 @@ RUN npm install
 # Copy the current directory contents into the container at $HOME/app setting the owner to the user
 COPY --chown=user . $HOME/app
 
-EXPOSE 7860
+EXPOSE 3000
 CMD [ "npm", "run", "start" ]

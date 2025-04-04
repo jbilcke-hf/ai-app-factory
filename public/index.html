@@ -42,7 +42,7 @@
               name="promptDraft"
               x-model="promptDraft"
               rows="10"
-              placeholder="Describe your web app"
+              placeholder="Describe your web app (eg. tictactoe web game)"
               class="input w-full rounded text-stone-800 bg-stone-50 border-2 border-stone-400 font-mono text-md md:text-lg h-24 md:h-48"
             ></textarea>
             <p class="py-1 md:py-2 text-stone-700 text-italic">
@@ -68,7 +68,7 @@
                   deepseek-ai/DeepSeek-V3-0324
                 </a>
               </p>
-              <p>Powered by 🤗 <a href="https://huggingface.co/inference-api" class="underline" target="_blank">Inference API</a></p>
+              <p>Est. 2023</p>
               <p class="text-stone-700" x-show="state === 'loading'">
                 Waiting for the generation to begin (might take a few minutes)..
               </p>
@@ -100,7 +100,16 @@
         </div>
         
         <div
-          x-show="state === 'stopped' && spaceUrl"
+          x-show="state === 'stopped' && spaceUrl && !spaceUrlReady"
+          class="flex w-full -mt-20 items-end justify-center pointer-events-none">
+          <div class="flex flex-row py-3 px-8 text-center bg-yellow-200 text-yellow-800 rounded-md shadow-md">
+            <div class="mr-1">⏳</div>
+            <div>Space created! Waiting for it to be ready...</div>
+          </div>
+        </div>
+        
+        <div
+          x-show="state === 'stopped' && spaceUrl && spaceUrlReady"
           class="flex w-full -mt-20 items-end justify-center pointer-events-none">
           <div class="flex flex-row py-3 px-8 text-center bg-green-200 text-green-800 rounded-md shadow-md">
             <div class="mr-1">🚀</div>
@@ -165,20 +174,27 @@
           saveToken(token) {
             localStorage.setItem(storageKey, token)
           },
+          spaceUrlReady: false,
           getIframeSource() {
             if (!this.open) {
               return '/placeholder.html';
             }
             
-            if (this.spaceUrl) {
+            if (this.spaceUrl && this.spaceUrlReady) {
               return this.spaceUrl;
+            }
+            
+            if (this.spaceUrl && !this.spaceUrlReady) {
+              return '/placeholder.html';
             }
             
             return `/app?prompt=${encodeURIComponent(this.prompt)}&token=${encodeURIComponent(this.token)}`;
           },
           checkForSpaceUrl(html) {
             if (!html) return null;
-            const match = html.match(/<space-url>(.*?)<\/space-url>/);
+            // Match both regular and HTML-escaped space-url tags
+            const match = html.match(/(?:<space-url>|&lt;space-url&gt;)(?:\s*)?(https?:\/\/[^\s<&]+)(?:\s*)?(?:<\/space-url>|&lt;\/space-url&gt;)/i);
+            // console.log("Space URL regex check:", match);
             return match ? match[1] : null;
           },
           init() {
@@ -189,6 +205,10 @@
               }
               const iframeDocument = document?.getElementById("iframe")?.contentWindow?.document;
               const html = iframeDocument?.documentElement?.outerHTML;
+              // Log a sample of the HTML content to debug space URL detection
+              if (html && html.includes('space-url')) {
+                console.log("Found space-url in HTML content:", html.substring(html.indexOf('space-url') - 50, html.indexOf('space-url') + 150));
+              }
               const size = Number(html?.length); // count how many characters we have generated
 
               if (isNaN(size) || !isFinite(size)) {
@@ -208,10 +228,37 @@
                 
                 // Check if the space URL is in the response
                 const detectedSpaceUrl = this.checkForSpaceUrl(html);
+                // console.log("detectedSpaceUrl:", detectedSpaceUrl);
+                
                 if (detectedSpaceUrl) {
                   console.log("Space URL detected:", detectedSpaceUrl);
                   this.spaceUrl = detectedSpaceUrl;
                   this.state = "stopped";
+                  
+                  // Add 5-second delay before loading the space URL
+                  console.log("Waiting 5 seconds before loading the space...");
+                  setTimeout(() => {
+                    console.log("Space URL is now ready to load");
+                    this.spaceUrlReady = true;
+                  }, 5000);
+                }
+              }
+              
+              // Try to detect the space URL even if the size hasn't changed
+              // as it might be added at the end without changing overall size much
+              if (!this.spaceUrl && html) {
+                const retryDetectedSpaceUrl = this.checkForSpaceUrl(html);
+                if (retryDetectedSpaceUrl) {
+                  console.log("Space URL detected on retry:", retryDetectedSpaceUrl);
+                  this.spaceUrl = retryDetectedSpaceUrl;
+                  this.state = "stopped";
+                  
+                  // Add 5-second delay before loading the space URL
+                  console.log("Waiting 5 seconds before loading the space...");
+                  setTimeout(() => {
+                    console.log("Space URL is now ready to load");
+                    this.spaceUrlReady = true;
+                  }, 5000);
                 }
               }
 

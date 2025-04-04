@@ -3,7 +3,7 @@ import { createSpace } from './createSpace.mts'
 import { generateFiles } from './generateFiles.mts'
 
 const app = express()
-const port = 7860
+const port = 3000
 
 const minPromptSize = 16 // if you change this, you will need to also change in public/index.html
 const timeoutInSec = 15 * 60
@@ -118,7 +118,8 @@ app.get('/app', async (req, res) => {
     // Send the space URL back to the frontend
     if (spaceInfo && spaceInfo.username && spaceInfo.slug) {
       const spaceUrl = `https://${spaceInfo.username}-${spaceInfo.slug}.hf.space`
-      res.write(`\n\n<space-url>${spaceUrl}</space-url>`)
+      // Add clear markers and spacing to make the space URL easier to detect
+      res.write(`\n\n<!-- SPACE URL MARKER -->\n<space-url>${spaceUrl}</space-url>\n<!-- END SPACE URL MARKER -->\n\n`)
       console.log(`Created space: ${spaceUrl}`)
     }
   }
