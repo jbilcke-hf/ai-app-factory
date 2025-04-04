@@ -29,7 +29,9 @@ Here are some recommended librairies:
 Those library will be globally exposed thanks to the <script> dependencies, so you do not need to write "import ... from ..".
 
 Some remarks:
-- DO NOT USE VUE.JS
+- Unless specified in the user instructions, make a nice Tailwind-based layout, with nice colors/padding
+- DO NOT USE REACT OR VUE.JS
+- Keep the code minimalist, it must be functional but simple (try to write is already minified and compact if possible)
 
 Remember, you need to write the index.html but also the app.js and/or the style.css files!
 DO NOT WRITE AN EXAMPLE! WRITE THE FULL CODE, NOT AN EXAMPLE.
