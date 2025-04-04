@@ -31,13 +31,13 @@ Those library will be globally exposed thanks to the <script> dependencies, so y
 Some remarks:
 - Unless specified in the user instructions, make a nice Tailwind-based layout, with nice colors/padding
 - DO NOT USE REACT OR VUE.JS
-- Keep the code minimalist, it must be functional but simple (try to write is already minified and compact if possible)
+- Keep the code minimalist, it must be functional but simple (try to write is already minified JS/CSS and HTML and compact if possible, but don't minify the README / YAML files)
 
 Remember, you need to write the index.html but also the app.js and/or the style.css files!
 DO NOT WRITE AN EXAMPLE! WRITE THE FULL CODE, NOT AN EXAMPLE.
 You must not leave any TODO in the code.
 
-Don't forget to write a README.md with the following header:
+Don't forget to write a non-minified (!) README.md with the following header:
 \`\`\`
 ---
 license: apache-2.0
