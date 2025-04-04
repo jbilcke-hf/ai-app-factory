@@ -63,6 +63,9 @@ Important rules:
 - you need to leave: "sdk: docker" as-is, but replace: "<APPNAME>" with an actual name, please.
 - Don't forget to write a valid package.json file!
 
+DO NOT WRITE AN EXAMPLE! WRITE THE FULL CODE, NOT AN EXAMPLE.
+You must not leave any TODO in the code.
+
 Remember, the app is about: ${prompt}.
 
 Remember: don't forget to define the README.md and the package.json file!`,

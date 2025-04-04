@@ -21,6 +21,8 @@ There is already a project with this structure:
 - pubspec.yaml
 - cooking_llama.iml
 
+DO NOT WRITE AN EXAMPLE! WRITE THE FULL CODE, NOT AN EXAMPLE.
+You must not leave any TODO in the code.
 
 Don't forget to write a README.md with the following header, or else you will be FIRED:
 \`\`\`

@@ -113,7 +113,14 @@ app.get('/app', async (req, res) => {
   if (files.length > 0) {
     console.log("files:", JSON.stringify(files, null, 2))
 
-    await createSpace(files, token)
+    const spaceInfo = await createSpace(files, token)
+    
+    // Send the space URL back to the frontend
+    if (spaceInfo && spaceInfo.username && spaceInfo.slug) {
+      const spaceUrl = `https://${spaceInfo.username}-${spaceInfo.slug}.hf.space`
+      res.write(`\n\n<space-url>${spaceUrl}</space-url>`)
+      console.log(`Created space: ${spaceUrl}`)
+    }
   }
 
   // res.write(JSON.stringify(files, null, 2))

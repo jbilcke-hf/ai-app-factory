@@ -57,4 +57,11 @@ export const createSpace = async (files: RepoFile[], token: string) => {
   // TODO we should keep track of the repo and delete it after 30 min
   // or delete it if we reached 20 repos
   // await deleteRepo({ repo, credentials })
+  
+  // Return information about the created space
+  return {
+    username: username.toLowerCase(),
+    slug: slug.toLowerCase(),
+    title
+  }
 }

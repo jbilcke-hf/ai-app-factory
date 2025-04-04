@@ -16,12 +16,19 @@ export function getStreamlitApp(prompt: string) {
       role: "user",
       content: `Please write, file by file, the source code for a Streamlit app.
 
-Please limit yourself to the following Python modules:
+DO NOT WRITE AN EXAMPLE! WRITE THE FULL CODE, NOT AN EXAMPLE.
+You must not leave any TODO in the code.
+
+You MUST use the following Python modules:
+- torch (version 2.6.0)
+- accelerate (version 1.6.0)
+
+You are free to use (if necessary) the following Python modules. In tha case, don't specify a version, just use them as-is so it uses the latest one. Make sure to add them to the requirements.txt:
 - numpy
 - matplotlib
-- torch
 - diffusers
 - transformers
+- huggingface_hub
 
 Don't forget to write a README.md with the following header:
 \`\`\`

@@ -32,7 +32,8 @@ Some remarks:
 - DO NOT USE VUE.JS
 
 Remember, you need to write the index.html but also the app.js and/or the style.css files!
-DO NOT WRITE AN EXAMPLE! WRITE THE FULL CODE!!
+DO NOT WRITE AN EXAMPLE! WRITE THE FULL CODE, NOT AN EXAMPLE.
+You must not leave any TODO in the code.
 
 Don't forget to write a README.md with the following header:
 \`\`\`

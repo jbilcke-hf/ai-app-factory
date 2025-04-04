@@ -16,6 +16,9 @@ export function getGradioApp(prompt: string) {
       role: "user",
       content: `Please write, file by file, the source code for a Gradio project.
 
+DO NOT WRITE AN EXAMPLE! WRITE THE FULL CODE, NOT AN EXAMPLE.
+You must not leave any TODO in the code.
+
 You MUST use the following Python modules:
 - gradio (version 5.23.3)
 - torch (version 2.6.0)

@@ -87,18 +87,24 @@
         <iframe
           id="iframe"
           class="border-none w-full md:min-h-screen"
-          :src="!open
-            ? '/placeholder.html'
-            : `/app?prompt=${encodeURIComponent(prompt)}&token=${encodeURIComponent(token)}`
-          "
+          :src="getIframeSource()"
         ></iframe>
 
         <div
-          x-show="state !== 'stopped'"
+          x-show="state !== 'stopped' && !spaceUrl"
           class="flex w-full -mt-20 items-end justify-center pointer-events-none">
           <div class="flex flex-row py-3 px-8 text-center bg-stone-200 text-stone-600 rounded-md shadow-md">
             <div class="animate-bounce duration-150 mr-1">🤖</div>
             <div>Generating your app..</div>
+          </div>
+        </div>
+        
+        <div
+          x-show="state === 'stopped' && spaceUrl"
+          class="flex w-full -mt-20 items-end justify-center pointer-events-none">
+          <div class="flex flex-row py-3 px-8 text-center bg-green-200 text-green-800 rounded-md shadow-md">
+            <div class="mr-1">🚀</div>
+            <div>Space created successfully!</div>
           </div>
         </div>
       </div>
@@ -155,8 +161,25 @@
           timeoutInSec: 15, // time before we determine something went wrong
           state: "stopped",
           lastTokenAt: +new Date(),
+          spaceUrl: null,
           saveToken(token) {
             localStorage.setItem(storageKey, token)
+          },
+          getIframeSource() {
+            if (!this.open) {
+              return '/placeholder.html';
+            }
+            
+            if (this.spaceUrl) {
+              return this.spaceUrl;
+            }
+            
+            return `/app?prompt=${encodeURIComponent(this.prompt)}&token=${encodeURIComponent(this.token)}`;
+          },
+          checkForSpaceUrl(html) {
+            if (!html) return null;
+            const match = html.match(/<space-url>(.*?)<\/space-url>/);
+            return match ? match[1] : null;
           },
           init() {
             setInterval(() => {
@@ -164,7 +187,8 @@
                 this.lastTokenAt = +new Date();
                 return;
               }
-              const html = document?.getElementById("iframe")?.contentWindow?.document?.documentElement?.outerHTML;
+              const iframeDocument = document?.getElementById("iframe")?.contentWindow?.document;
+              const html = iframeDocument?.documentElement?.outerHTML;
               const size = Number(html?.length); // count how many characters we have generated
 
               if (isNaN(size) || !isFinite(size)) {
@@ -181,6 +205,14 @@
 
               if (hasChanged) {
                 this.lastTokenAt = now;
+                
+                // Check if the space URL is in the response
+                const detectedSpaceUrl = this.checkForSpaceUrl(html);
+                if (detectedSpaceUrl) {
+                  console.log("Space URL detected:", detectedSpaceUrl);
+                  this.spaceUrl = detectedSpaceUrl;
+                  this.state = "stopped";
+                }
               }
 
               this.size = newSize;
