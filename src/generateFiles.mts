@@ -7,7 +7,9 @@ import { getStreamlitApp } from './getStreamlitApp.mts'
 import { getWebApp } from './getWebApp.mts'
 import { getReactApp } from './getReactApp.mts'
 import { isStreamlitAppPrompt } from './isStreamlitAppPrompt.mts'
-import { isPythonOrGradioAppPrompt } from './isPythonOrGradioAppPrompt.mts'
+import { isPythonAppPrompt } from './isPythonAppPrompt.mts'
+import { isGradioAppPrompt } from './isGradioAppPrompt.mts'
+import { isWebAppPrompt } from './isWebAppPrompt.mts'
 import { isReactAppPrompt } from './isReactAppPrompt.mts'
 
 export const generateFiles = async (
@@ -20,12 +22,16 @@ export const generateFiles = async (
   }
 
   const { prefix, files, instructions } =
-  isStreamlitAppPrompt(prompt)
+    isWebAppPrompt(prompt)
+    ? getWebApp(prompt)
+    : isStreamlitAppPrompt(prompt)
     ? getStreamlitApp(prompt)
-    : isPythonOrGradioAppPrompt(prompt)
+    : isGradioAppPrompt(prompt)
     ? getGradioApp(prompt)
     : isReactAppPrompt(prompt)
     ? getReactApp(prompt)
+    : isPythonAppPrompt(prompt)
+    ? getGradioApp(prompt)
     : getWebApp(prompt)
 
   const inputs = createLlamaCoderPrompt(instructions) + "\nSure! Here are the source files:\n" + prefix
