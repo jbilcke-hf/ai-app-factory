@@ -235,12 +235,12 @@
                   this.spaceUrl = detectedSpaceUrl;
                   this.state = "stopped";
                   
-                  // Add 5-second delay before loading the space URL
-                  console.log("Waiting 5 seconds before loading the space...");
+                  // Add 3-second delay before loading the space URL
+                  console.log("Waiting 3 seconds before loading the space...");
                   setTimeout(() => {
                     console.log("Space URL is now ready to load");
                     this.spaceUrlReady = true;
-                  }, 5000);
+                  }, 3000);
                 }
               }
               
@@ -253,12 +253,12 @@
                   this.spaceUrl = retryDetectedSpaceUrl;
                   this.state = "stopped";
                   
-                  // Add 5-second delay before loading the space URL
-                  console.log("Waiting 5 seconds before loading the space...");
+                  // Add 3-second delay before loading the space URL
+                  console.log("Waiting 3 seconds before loading the space...");
                   setTimeout(() => {
                     console.log("Space URL is now ready to load");
                     this.spaceUrlReady = true;
-                  }, 5000);
+                  }, 3000);
                 }
               }
 

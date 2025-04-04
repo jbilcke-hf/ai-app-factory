@@ -117,10 +117,23 @@ app.get('/app', async (req, res) => {
     
     // Send the space URL back to the frontend
     if (spaceInfo && spaceInfo.username && spaceInfo.slug) {
-      const spaceUrl = `https://${spaceInfo.username}-${spaceInfo.slug}.hf.space`
+      // Determine SDK type using the same logic as in createSpace.mts
+      let sdk;
+      if (files.some(file => file.path.includes("Dockerfile"))) {
+        sdk = "docker";
+      } else if (files.some(file => file.path.includes("app.py"))) {
+        sdk = "streamlit";
+      } else {
+        sdk = "static";
+      }
+      
+      // Only static SDK spaces use the static.hf.space domain
+      const domain = sdk === "static" ? "static.hf.space" : "hf.space";
+      const spaceUrl = `https://${spaceInfo.username}-${spaceInfo.slug}.${domain}`
+      
       // Add clear markers and spacing to make the space URL easier to detect
       res.write(`\n\n<!-- SPACE URL MARKER -->\n<space-url>${spaceUrl}</space-url>\n<!-- END SPACE URL MARKER -->\n\n`)
-      console.log(`Created space: ${spaceUrl}`)
+      console.log(`Created ${sdk} space: ${spaceUrl}`)
     }
   }
 
